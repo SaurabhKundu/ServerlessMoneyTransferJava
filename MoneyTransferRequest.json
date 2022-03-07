@@ -1,0 +1,6 @@
+{
+  "creditAccountNumber": "accountNumber1",
+  "debitAccountNumber": "accountNumber2",
+  "accountType": "SAVINGS",
+  "balance": 100
+}

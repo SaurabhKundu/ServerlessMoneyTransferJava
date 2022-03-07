@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: Transfer Open API Spec
+  description: Transfer Open API Spec
+  version: v1
+servers:
+  - url: http://localhost:8080/
+    description: local server
+tags:
+  - name: account, transfer
+paths:
+  /accounts:
+    get:
+      tags:
+        - account
+      summary: get all the accounts
+      description: returns all the accounts fetched from Database or/and core banking systems
+      operationId: getAccounts
+      responses:
+        "200":
+          description: successfully fetched all accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllAccounts'
+        "500":
+          description: Internal server exception
+        "404":
+          description: Not found exception
+  /accounts/{id}:
+    get:
+      tags:
+        - account
+      summary: get accounts by id
+      description: returns accounts fetched from Database or/and core banking systems by id
+      operationId: getAccountsById
+      parameters:
+        - name: id
+          in: path
+          description: account id/number of the account
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully fetched accounts details by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        "500":
+          description: Internal server exception
+        "404":
+          description: Not found exception
+        "400":
+          description: Bad request exception
+  /transfer:
+    post:
+      tags:
+        - transfer
+      summary: performs a transfer
+      description: transfers balance between 2 accounts
+      operationId: transferBalance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+      responses:
+        "200":
+          description: Transfer executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferSuccessResponse'
+        "500":
+          description: Internal Server exception
+        "400":
+          description: Bad request exception
+
+components:
+  schemas:
+    AccountType:
+      enum:
+        - SAVINGS
+        - CURRENT
+    AccountNumber:
+      type: string
+      description: "unique identifier of an account"
+      example: "account1"
+    Balance:
+      type: double
+      description: account balance or amount
+    Account:
+      properties:
+        accountNumber:
+          $ref: '#/components/schemas/AccountNumber'
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        balance:
+          $ref: '#/components/schemas/Balance'
+        active:
+          type: boolean
+    GetAllAccounts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
+    TransferRequest:
+      type: object
+      properties:
+        creditAccountNumber:
+          $ref: '#/components/schemas/AccountNumber'
+        debitAccountNumber:
+          $ref: '#/components/schemas/AccountNumber'
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        amount:
+          $ref: '#/components/schemas/Balance'
+    TransferSuccessResponse:
+      type: object
+      properties:
+        updatedCreditBalance:
+          $ref: '#/components/schemas/Balance'
+        updatedDebitBalance:
+          $ref: '#/components/schemas/Balance'
+
