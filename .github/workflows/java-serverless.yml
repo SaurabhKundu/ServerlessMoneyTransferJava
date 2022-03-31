@@ -1,27 +1,26 @@
-name: Java CI 
+# Sample Github Actions file
+name: Serverless CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
+    push: 
+        branches: [main]
+    pull_request: 
+        branches: [main]
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn clean install -DskipTests
-    - name: Run tests
-      run: mvn test
-    - name: Build docker image
-      run: mvn clean install -Pdocker
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Actions Checkout
+              uses: actions/checkout@v2
+            - name: Set up JDK 11
+              uses: actions/setup-java@v2
+              with: 
+                cache: maven
+                java-version: 11
+                distribution: temurin
+            - name: Build with Maven
+              run: mvn clean install -DskipTests
+            - name: Run tests
+              run: mvn test
+            - name: Build docker image
+              run: mvn clean install -Pdocker
